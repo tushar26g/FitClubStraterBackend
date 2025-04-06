@@ -1,15 +1,22 @@
 package com.example.gym_saas_backend.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AuthResponse {
+public class ApiResponse<T> {
     private boolean success;
     private String message;
-    private String token; // null if registration fails
+    private T data;
+
+    public ApiResponse(boolean success, String message, T data) {
+        this.success = success;
+        this.message = message;
+        this.data = data;
+    }
+
+    // Getters & Setters
 
     public boolean isSuccess() {
         return success;
@@ -27,17 +34,11 @@ public class AuthResponse {
         this.message = message;
     }
 
-    public String getToken() {
-        return token;
+    public T getData() {
+        return data;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public AuthResponse(boolean success, String message, String token) {
-        this.success = success;
-        this.message = message;
-        this.token = token;
+    public void setData(T data) {
+        this.data = data;
     }
 }
