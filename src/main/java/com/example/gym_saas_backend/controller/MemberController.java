@@ -39,7 +39,7 @@ public class MemberController {
         } catch (IllegalStateException e) {
             return ResponseEntity.status(409).body(new ApiResponse<>(false, e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new ApiResponse<>(false, "Something went wrong", null));
+            return ResponseEntity.status(500).body(new ApiResponse<>(false, "Something went wrong: " + e.getMessage(), null));
         }
     }
 
@@ -58,7 +58,7 @@ public class MemberController {
                     statusEnum = Member.MembershipStatus.valueOf(status.toUpperCase());
                 } catch (IllegalArgumentException e) {
                     return ResponseEntity.badRequest()
-                            .body(new ApiResponse<>(false, "Invalid membership status", null));
+                            .body(new ApiResponse<>(false, "Invalid membership status" + e.getMessage(), null));
                 }
             }
 
@@ -76,7 +76,7 @@ public class MemberController {
             return ResponseEntity.ok(new ApiResponse<>(true, "Members fetched successfully", members));
         } catch (Exception e) {
             return ResponseEntity.status(500)
-                    .body(new ApiResponse<>(false, "Failed to retrieve members", null));
+                    .body(new ApiResponse<>(false, "Failed to retrieve members" + e.getMessage(), null));
         }
     }
 
@@ -109,12 +109,9 @@ public class MemberController {
     public ResponseEntity<ApiResponse<String>> updateMembershipStatus(@RequestBody UpdateMembershipStatusRequest requestBody,
                                                                       HttpServletRequest request) {
         try {
-//            Claims claims = Jwts.parser()
-//                    .setSigningKey(secret)
-//                    .parseClaimsJws(jwt)
-//                    .getBody();
 
             String role = (String) request.getAttribute("role");
+            System.out.println(role);
             Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
 
             memberService.updateMembershipStatus(gymOwnerId, requestBody.getMemberId(), requestBody.getMembershipStatus());
@@ -137,7 +134,7 @@ public class MemberController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body(new ApiResponse<>(false, e.getMessage(), null));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new ApiResponse<>(false, "Something went wrong", null));
+            return ResponseEntity.status(500).body(new ApiResponse<>(false, "Something went wrong" + e.getMessage(), null));
         }
     }
 
