@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -68,15 +69,67 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(member);
     }
 
-
     @Override
-    public List<Member> getMembersByOwner(Long gymOwnerId) {
-        return memberRepository.findByGymOwnerIdOrderByMembershipEndDateAsc(gymOwnerId);
+    public boolean deleteMemberByIdAndOwnerId(Long memberId, Long ownerId) {
+        Optional<Member> memberOpt = memberRepository.findByIdAndGymOwnerId(memberId, ownerId);
+        if (memberOpt.isPresent()) {
+            memberRepository.delete(memberOpt.get());
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public List<Member> searchMembers(Long gymOwnerId, String search) {
-        return memberRepository.searchByGymOwnerIdAndKeyword(gymOwnerId, search);
+    public void updateMembershipStatus(Long gymOwnerId, Long memberId, Member.MembershipStatus status) {
+        Member member = memberRepository.findByIdAndGymOwnerId(memberId, gymOwnerId)
+                .orElseThrow(() -> new RuntimeException("Member not found or not authorized"));
+
+        member.setMembershipStatus(status);
+        memberRepository.save(member);
+    }
+
+    @Override
+    public List<Member> getMembersByOwnerAndStatus(Long gymOwnerId, Member.MembershipStatus status) {
+        if (status == null) {
+            return memberRepository.findByGymOwnerIdOrderByMembershipEndDateAsc(gymOwnerId);
+        } else {
+            return memberRepository.findByGymOwnerIdAndMembershipStatusOrderByMembershipEndDateAsc(gymOwnerId, status);
+        }
+    }
+
+    @Override
+    public List<Member> searchMembersWithStatus(Long gymOwnerId, String search, Member.MembershipStatus status) {
+        if (status == null) {
+            return memberRepository.searchByGymOwnerIdAndKeyword(gymOwnerId, search);
+        } else {
+            return memberRepository.searchByGymOwnerIdAndKeywordAndStatus(gymOwnerId, search, status);
+        }
+    }
+
+    @Override
+    public Member updateMember(MemberRequestDto dto) {
+        // Fetch existing member using ID and gymOwnerId
+        Member existing = memberRepository.findByIdAndGymOwnerId(dto.getMemberId(), dto.getGymOwnerId())
+                .orElseThrow(() -> new NoSuchElementException("Member not found or does not belong to your gym."));
+
+        // Update fields
+        if (dto.getName() != null) existing.setName(dto.getName());
+        if (dto.getJoiningDate() != null) existing.setJoiningDate(dto.getJoiningDate());
+        if (dto.getMembershipEndDate() != null) existing.setMembershipEndDate(dto.getMembershipEndDate());
+        if (dto.getPackageName() != null) existing.setPackageName(dto.getPackageName());
+        if (dto.getPaymentStatus() != null)
+            existing.setPaymentStatus(Member.PaymentStatus.valueOf(dto.getPaymentStatus().toUpperCase()));
+        if (dto.getAmountPaid() != null) existing.setAmountPaid(dto.getAmountPaid());
+        if (dto.getMobileNumber() != null) existing.setMobileNumber(dto.getMobileNumber());
+        if (dto.getEmail() != null) existing.setEmail(dto.getEmail());
+        if (dto.getMembershipStatus() != null)
+            existing.setMembershipStatus(Member.MembershipStatus.valueOf(dto.getMembershipStatus().toUpperCase()));
+        if (dto.getProfilePhotoUrl() != null) existing.setProfilePhotoUrl(dto.getProfilePhotoUrl());
+        if (dto.getPaymentMethod() != null)
+            existing.setPaymentMethod(Member.PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()));
+        if (dto.getMembershipPhotoUrl() != null) existing.setMembershipPhotoUrl(dto.getMembershipPhotoUrl());
+
+        return memberRepository.save(existing);
     }
 
 }

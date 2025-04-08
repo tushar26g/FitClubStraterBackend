@@ -7,8 +7,11 @@ import java.util.List;
 
 public interface MemberService {
     Member addMember(MemberRequestDto dto);
-    List<Member> getMembersByOwner(Long gymOwnerId);
-    List<Member> searchMembers(Long gymOwnerId, String search);
+    boolean deleteMemberByIdAndOwnerId(Long memberId, Long ownerId);
+    void updateMembershipStatus(Long gymOwnerId, Long memberId, Member.MembershipStatus status);
+    List<Member> getMembersByOwnerAndStatus(Long gymOwnerId, Member.MembershipStatus status);
+    List<Member> searchMembersWithStatus(Long gymOwnerId, String search, Member.MembershipStatus status);
+    Member updateMember(MemberRequestDto dto);
 
 }
 

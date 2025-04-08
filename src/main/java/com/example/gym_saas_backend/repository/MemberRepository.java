@@ -22,5 +22,16 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "ORDER BY m.membershipEndDate ASC")
     List<Member> searchByGymOwnerIdAndKeyword(Long gymOwnerId, String search);
 
+    Optional<Member> findByIdAndGymOwnerId(Long id, Long gymOwnerId);
+
+    List<Member> findByGymOwnerIdAndMembershipStatusOrderByMembershipEndDateAsc(Long gymOwnerId, Member.MembershipStatus status);
+
+    @Query("SELECT m FROM Member m WHERE m.gymOwnerId = :gymOwnerId AND m.membershipStatus = :status AND " +
+            "(LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(m.mobileNumber) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(m.email) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+            "ORDER BY m.membershipEndDate ASC")
+    List<Member> searchByGymOwnerIdAndKeywordAndStatus(Long gymOwnerId, String search, Member.MembershipStatus status);
+
 }
 
