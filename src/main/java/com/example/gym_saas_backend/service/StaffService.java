@@ -11,7 +11,7 @@ public interface StaffService {
     Staff updateStaff(StaffRequestDto dto);
     boolean deleteStaffByIdAndOwnerId(Long staffId, Long gymOwnerId);
     void updateStaffStatus(Long gymOwnerId, Long staffId, String status);
-    void updatePassword(Long staffId, Long gymOwnerId, String newPassword);
+//    void updatePassword(Long staffId, Long gymOwnerId, String newPassword);
     List<Staff> searchStaffWithStatus(Long gymOwnerId, String search, Staff.Status status);
     List<Staff> getStaffByOwnerAndStatus(Long gymOwnerId, Staff.Status status);
 }

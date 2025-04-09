@@ -25,8 +25,6 @@ public class Staff {
 
     private String name;
 
-    private String password;
-
     @Column(name = "mobile_number")
     private String mobileNumber;
 
@@ -43,8 +41,6 @@ public class Staff {
 
     @Column(name = "profile_photo_url", columnDefinition = "TEXT")
     private String profilePhotoUrl;
-
-    private Boolean passwordUpdated = false;
 
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -63,14 +59,6 @@ public class Staff {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getMobileNumber() {
@@ -119,14 +107,6 @@ public class Staff {
 
     public void setProfilePhotoUrl(String profilePhotoUrl) {
         this.profilePhotoUrl = profilePhotoUrl;
-    }
-
-    public Boolean getPasswordUpdated() {
-        return passwordUpdated;
-    }
-
-    public void setPasswordUpdated(Boolean passwordUpdated) {
-        this.passwordUpdated = passwordUpdated;
     }
 
     public LocalDateTime getCreatedAt() {

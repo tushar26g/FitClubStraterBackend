@@ -2,8 +2,11 @@ package com.example.gym_saas_backend.service;
 
 import com.example.gym_saas_backend.dto.LoginRequest;
 import com.example.gym_saas_backend.dto.RegisterRequest;
+import com.example.gym_saas_backend.dto.UserAuthResult;
 import com.example.gym_saas_backend.entity.Owner;
+import com.example.gym_saas_backend.entity.Staff;
 import com.example.gym_saas_backend.repository.OwnerRepository;
+import com.example.gym_saas_backend.repository.StaffRepository;
 import com.example.gym_saas_backend.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private StaffRepository staffRepository;
 
     @Override
     public Owner registerOwner(RegisterRequest request) {
@@ -81,23 +87,36 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Owner authenticateOwner(LoginRequest request) {
+    public UserAuthResult authenticateUser(LoginRequest request) {
         String identifier = request.getIdentifier().trim();
+        String password = request.getPassword();
+
+        // 1. Admin login (hardcoded)
+        if (identifier.equals("admin@gym.com") && password.equals("admin123")) {
+            return new UserAuthResult("admin@gym.com", "ADMIN", 0L); // 0 or dummy id
+        }
+
+        // 2. Owner login (from DB)
         Optional<Owner> ownerOpt = ownerRepository.findByEmailOrMobileNumber(identifier, identifier);
-
-        if (ownerOpt.isEmpty()) {
-            throw new RuntimeException("Invalid email or mobile number");
+        if (ownerOpt.isPresent()) {
+            Owner owner = ownerOpt.get();
+            if (!passwordEncoder.matches(password, owner.getPassword())) {
+                throw new RuntimeException("Invalid password");
+            }
+            return new UserAuthResult(owner.getEmail(), "OWNER", owner.getId());
         }
 
-        Owner owner = ownerOpt.get();
+        // 3. Staff login (from DB)
+//        Optional<Staff> staffOpt = staffRepository.findByEmailOrMobileNumber(identifier, identifier);
+//        if (staffOpt.isPresent()) {
+//            Staff staff = staffOpt.get();
+//            if (!passwordEncoder.matches(password, staff.getPassword())) {
+//                throw new RuntimeException("Invalid password");
+//            }
+//            return new UserAuthResult(staff.getEmail(), "STAFF", staff.getGymOwnerId());
+//        }
 
-        if (!passwordEncoder.matches(request.getPassword(), owner.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        // Optionally set JWT here too
-        // String token = jwtUtil.generateToken(owner.getEmail(), "GYM_OWNER", owner.getId());
-
-        return owner;
+        throw new RuntimeException("User not found");
     }
+
 }

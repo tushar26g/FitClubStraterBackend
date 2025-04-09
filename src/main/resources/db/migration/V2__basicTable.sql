@@ -31,7 +31,7 @@ CREATE TABLE enquiries (
 CREATE TABLE staff (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
-    password VARCHAR(255),
+    status VARCHAR(20) DEFAULT 'ACTIVE',
     mobile_number VARCHAR(15),
     email VARCHAR(255),
     joining_date DATE,
@@ -47,4 +47,13 @@ CREATE TABLE notifications (
     notification_type ENUM('SMS', 'WHATSAPP'),
     message TEXT,
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE staff_attendance (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    staff_id BIGINT NOT NULL,
+    gym_owner_id BIGINT NOT NULL,
+    date DATE NOT NULL,
+    status ENUM('PRESENT', 'ABSENT', 'LEAVE') DEFAULT 'PRESENT',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

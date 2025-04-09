@@ -41,4 +41,13 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             Long gymOwnerId,
             String search,
             Staff.Status status);
+
+    Optional<Staff> findByEmailOrMobileNumber(String email, String mobileNumber);
+
+    @Query("SELECT s FROM Staff s WHERE s.status = :status AND (s.mobileNumber = :mobileNumber OR s.email = :email)")
+    Optional<Staff> findByStatusAndMobileNumberOrEmail(
+            Staff.Status status,
+            String mobileNumber,
+            String email);
+
 }

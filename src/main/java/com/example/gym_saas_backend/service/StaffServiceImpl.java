@@ -26,6 +26,7 @@ public class StaffServiceImpl implements StaffService {
         Optional<Staff> existingStaffOpt = staffRepository
                 .findByGymOwnerIdAndMobileNumberOrEmail(dto.getGymOwnerId(), dto.getMobileNumber(), dto.getEmail());
 
+
         if (existingStaffOpt.isPresent()) {
             Staff existing = existingStaffOpt.get();
             if (existing.getStatus() == Staff.Status.INACTIVE) {
@@ -36,14 +37,12 @@ public class StaffServiceImpl implements StaffService {
         }
         Staff staff = new Staff();
         staff.setName(dto.getName());
-        if(staff.getEmail()!=null) staff.setEmail(dto.getEmail());
-        staff.setPassword(passwordEncoder.encode(dto.getPassword()));
+        staff.setEmail(dto.getEmail());
         staff.setMobileNumber(dto.getMobileNumber());
         staff.setJoiningDate(dto.getJoinDate());
         staff.setStatus(Staff.Status.valueOf("ACTIVE"));
         staff.setGymOwnerId(dto.getGymOwnerId());
         if(staff.getProfilePhotoUrl()!=null) staff.setProfilePhotoUrl(dto.getProfilePhotoUrl());
-        staff.setPasswordUpdated(false);
         return staffRepository.save(staff);
     }
 
@@ -54,7 +53,6 @@ public class StaffServiceImpl implements StaffService {
 
         if(dto.getName()!=null) staff.setName(dto.getName());
         if(dto.getEmail()!=null) staff.setEmail(dto.getEmail());
-        if(dto.getPassword()!=null) staff.setPassword(dto.getPassword());
         if(dto.getMobileNumber()!=null) staff.setMobileNumber(dto.getMobileNumber());
         if(dto.getJoinDate()!=null) staff.setJoiningDate(dto.getJoinDate());
         if(dto.getStatus()!=null) staff.setStatus(Staff.Status.valueOf(dto.getStatus().toUpperCase()));
@@ -81,13 +79,13 @@ public class StaffServiceImpl implements StaffService {
         staffRepository.save(staff);
     }
 
-    @Override
-    public void updatePassword(Long staffId, Long gymOwnerId, String newPassword) {
-        Staff staff = staffRepository.findByIdAndGymOwnerId(staffId, gymOwnerId).orElseThrow(() -> new NoSuchElementException("Staff not found"));
-        staff.setPassword(passwordEncoder.encode(newPassword)); // Assuming passwordEncoder is autowired
-        staff.setPasswordUpdated(true);
-        staffRepository.save(staff);
-    }
+//    @Override
+//    public void updatePassword(Long staffId, Long gymOwnerId, String newPassword) {
+//        Staff staff = staffRepository.findByIdAndGymOwnerId(staffId, gymOwnerId).orElseThrow(() -> new NoSuchElementException("Staff not found"));
+//        staff.setPassword(passwordEncoder.encode(newPassword)); // Assuming passwordEncoder is autowired
+//        staff.setPasswordUpdated(true);
+//        staffRepository.save(staff);
+//    }
 
     @Override
     public List<Staff> getStaffByOwnerAndStatus(Long gymOwnerId, Staff.Status status) {

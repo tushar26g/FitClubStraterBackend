@@ -65,7 +65,6 @@ public class MemberServiceImpl implements MemberService {
             member.setMembershipPhotoUrl(dto.getMembershipPhotoUrl());
 
         member.setGymOwnerId(dto.getGymOwnerId());
-
         return memberRepository.save(member);
     }
 
@@ -128,7 +127,6 @@ public class MemberServiceImpl implements MemberService {
         if (dto.getPaymentMethod() != null)
             existing.setPaymentMethod(Member.PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()));
         if (dto.getMembershipPhotoUrl() != null) existing.setMembershipPhotoUrl(dto.getMembershipPhotoUrl());
-
         return memberRepository.save(existing);
     }
 

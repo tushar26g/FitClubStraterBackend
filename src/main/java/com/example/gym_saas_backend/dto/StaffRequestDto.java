@@ -12,7 +12,6 @@ import java.time.LocalDate;
 public class StaffRequestDto {
     private Long staffId; // For update
     private String name;
-    private String password;
     private String mobileNumber;
     private String email;
     private LocalDate joinDate;
@@ -42,14 +41,6 @@ public class StaffRequestDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getMobileNumber() {

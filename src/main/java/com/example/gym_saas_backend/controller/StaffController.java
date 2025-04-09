@@ -77,20 +77,20 @@ public class StaffController {
         }
     }
 
-    @PostMapping("/update-password")
-    public ResponseEntity<ApiResponse<String>> updatePassword(HttpServletRequest request,
-                                                              @RequestBody Map<String, String> body) {
-        try {
-            String newPassword = body.get("newPassword");
-            Long staffId = Long.valueOf(body.get("staffId")); // You need to extract this via JWT
-            Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
-            staffService.updatePassword(staffId, gymOwnerId, newPassword);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Password updated successfully", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(500)
-                    .body(new ApiResponse<>(false, "Password update failed: " + e.getMessage(), null));
-        }
-    }
+//    @PostMapping("/update-password")
+//    public ResponseEntity<ApiResponse<String>> updatePassword(HttpServletRequest request,
+//                                                              @RequestBody Map<String, String> body) {
+//        try {
+//            String newPassword = body.get("newPassword");
+//            Long staffId = Long.valueOf(body.get("staffId")); // You need to extract this via JWT
+//            Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
+//            staffService.updatePassword(staffId, gymOwnerId, newPassword);
+//            return ResponseEntity.ok(new ApiResponse<>(true, "Password updated successfully", null));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500)
+//                    .body(new ApiResponse<>(false, "Password update failed: " + e.getMessage(), null));
+//        }
+//    }
 
     @GetMapping("/by-owner")
     public ResponseEntity<ApiResponse<List<Staff>>> getStaffByGymOwner(HttpServletRequest request,

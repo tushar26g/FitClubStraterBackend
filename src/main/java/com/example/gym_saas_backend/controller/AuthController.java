@@ -3,6 +3,7 @@ package com.example.gym_saas_backend.controller;
 import com.example.gym_saas_backend.dto.AuthResponse;
 import com.example.gym_saas_backend.dto.LoginRequest;
 import com.example.gym_saas_backend.dto.RegisterRequest;
+import com.example.gym_saas_backend.dto.UserAuthResult;
 import com.example.gym_saas_backend.entity.Owner;
 import com.example.gym_saas_backend.service.AuthService;
 import com.example.gym_saas_backend.util.JwtUtil;
@@ -44,21 +45,18 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
-            Owner owner = authService.authenticateOwner(request);
-            if (owner == null) {
-                return ResponseEntity.status(401).body(
-                        new AuthResponse(false, "Invalid email or password", null)
-                );
-            }
+            // returns object, role, and id
+            UserAuthResult result = authService.authenticateUser(request);
+            String token = jwtUtil.generateToken(result.getEmail(), result.getRole(), result.getId());
 
-            String token = jwtUtil.generateToken(owner.getEmail(), "OWNER", owner.getId());
             return ResponseEntity.ok(
                     new AuthResponse(true, "Login successful", token)
             );
         } catch (Exception e) {
             return ResponseEntity
-                    .status(500)
+                    .status(401)
                     .body(new AuthResponse(false, "Login failed: " + e.getMessage(), null));
         }
     }
+
 }
