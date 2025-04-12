@@ -93,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 1. Admin login (hardcoded)
         if (identifier.equals("admin@gym.com") && password.equals("admin123")) {
-            return new UserAuthResult("admin@gym.com", "ADMIN", 0L); // 0 or dummy id
+            return new UserAuthResult("admin@gym.com", "ADMIN", 0L, null); // 0 or dummy id
         }
 
         // 2. Owner login (from DB)
@@ -103,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
             if (!passwordEncoder.matches(password, owner.getPassword())) {
                 throw new RuntimeException("Invalid password");
             }
-            return new UserAuthResult(owner.getEmail(), "OWNER", owner.getId());
+            return new UserAuthResult(owner.getEmail(), "OWNER", owner.getId(), owner);
         }
 
         // 3. Staff login (from DB)

@@ -27,18 +27,18 @@ public class AuthController {
             Owner owner = authService.registerOwner(request);
             if (owner == null) {
                 return ResponseEntity.badRequest().body(
-                        new AuthResponse(false, "Registration failed", null)
+                        new AuthResponse(false, "Registration failed", null, null)
                 );
             }
 
             String token = jwtUtil.generateToken(owner.getEmail(), "OWNER", owner.getId());
             return ResponseEntity.status(201).body(
-                    new AuthResponse(true, "Registration successful", token)
+                    new AuthResponse(true, "Registration successful", token, owner)
             );
         } catch (Exception e) {
             return ResponseEntity
                     .status(500)
-                    .body(new AuthResponse(false, "Registration failed: " + e.getMessage(), null));
+                    .body(new AuthResponse(false, "Registration failed: " + e.getMessage(), null, null));
         }
     }
 
@@ -50,12 +50,12 @@ public class AuthController {
             String token = jwtUtil.generateToken(result.getEmail(), result.getRole(), result.getId());
 
             return ResponseEntity.ok(
-                    new AuthResponse(true, "Login successful", token)
+                    new AuthResponse(true, "Login successful", token, result.getOwner())
             );
         } catch (Exception e) {
             return ResponseEntity
                     .status(401)
-                    .body(new AuthResponse(false, "Login failed: " + e.getMessage(), null));
+                    .body(new AuthResponse(false, "Login failed: " + e.getMessage(), null, null));
         }
     }
 

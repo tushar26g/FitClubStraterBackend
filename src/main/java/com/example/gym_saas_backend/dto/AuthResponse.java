@@ -1,5 +1,6 @@
 package com.example.gym_saas_backend.dto;
 
+import com.example.gym_saas_backend.entity.Owner;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ public class AuthResponse {
     private boolean success;
     private String message;
     private String token; // null if registration fails
+    private Owner owner;
 
     public boolean isSuccess() {
         return success;
@@ -35,9 +37,18 @@ public class AuthResponse {
         this.token = token;
     }
 
-    public AuthResponse(boolean success, String message, String token) {
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public AuthResponse(boolean success, String message, String token, Owner owner) {
         this.success = success;
         this.message = message;
         this.token = token;
+        this.owner = owner;
     }
 }
