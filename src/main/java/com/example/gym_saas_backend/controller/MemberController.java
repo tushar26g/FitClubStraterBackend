@@ -1,5 +1,6 @@
 package com.example.gym_saas_backend.controller;
 
+import com.example.gym_saas_backend.dto.AnalysisDTO;
 import com.example.gym_saas_backend.dto.ApiResponse;
 import com.example.gym_saas_backend.dto.MemberRequestDto;
 import com.example.gym_saas_backend.dto.UpdateMembershipStatusRequest;
@@ -133,6 +134,17 @@ public class MemberController {
             return ResponseEntity.ok(new ApiResponse<>(true, "Member updated successfully", updatedMember));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body(new ApiResponse<>(false, e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ApiResponse<>(false, "Something went wrong" + e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/analysis")
+    public ResponseEntity<ApiResponse<AnalysisDTO>> analysisMembers(HttpServletRequest request){
+        try {
+            Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
+            AnalysisDTO analysisDTO = memberService.analysisMembers(gymOwnerId);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Member analyze successfully", analysisDTO));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ApiResponse<>(false, "Something went wrong" + e.getMessage(), null));
         }

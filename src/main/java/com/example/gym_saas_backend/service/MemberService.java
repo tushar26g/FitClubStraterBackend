@@ -1,5 +1,6 @@
 package com.example.gym_saas_backend.service;
 
+import com.example.gym_saas_backend.dto.AnalysisDTO;
 import com.example.gym_saas_backend.dto.MemberRequestDto;
 import com.example.gym_saas_backend.entity.Member;
 
@@ -12,6 +13,7 @@ public interface MemberService {
     List<Member> getMembersByOwnerAndStatus(Long gymOwnerId, Member.MembershipStatus status);
     List<Member> searchMembersWithStatus(Long gymOwnerId, String search, Member.MembershipStatus status);
     Member updateMember(MemberRequestDto dto);
+    AnalysisDTO analysisMembers(Long gymOwnerId);
 
 }
 

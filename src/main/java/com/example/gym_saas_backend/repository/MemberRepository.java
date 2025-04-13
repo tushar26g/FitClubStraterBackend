@@ -33,5 +33,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "ORDER BY m.membershipEndDate ASC")
     List<Member> searchByGymOwnerIdAndKeywordAndStatus(Long gymOwnerId, String search, Member.MembershipStatus status);
 
+    List<Member> findByGymOwnerId(Long gymOwnerId);
 }
 

@@ -1,5 +1,6 @@
 package com.example.gym_saas_backend.service;
 
+import com.example.gym_saas_backend.dto.AnalysisDTO;
 import com.example.gym_saas_backend.dto.MemberRequestDto;
 import com.example.gym_saas_backend.entity.Member;
 import com.example.gym_saas_backend.entity.Owner;
@@ -129,5 +130,26 @@ public class MemberServiceImpl implements MemberService {
         if (dto.getMembershipPhotoUrl() != null) existing.setMembershipPhotoUrl(dto.getMembershipPhotoUrl());
         return memberRepository.save(existing);
     }
+
+    @Override
+    public AnalysisDTO analysisMembers(Long gymOwnerId) {
+        List<Member> members = memberRepository.findByGymOwnerId(gymOwnerId);
+
+        int totalMembers = members.size();
+        int activeMembers = (int) members.stream()
+                .filter(m -> m.getMembershipStatus() == Member.MembershipStatus.ACTIVE)
+                .count();
+        int suspendedMembers = (int) members.stream()
+                .filter(m -> m.getMembershipStatus() == Member.MembershipStatus.SUSPENDED)
+                .count();
+
+        AnalysisDTO analysisDTO = new AnalysisDTO();
+        analysisDTO.setTotalMembers(totalMembers);
+        analysisDTO.setActiveMembers(activeMembers);
+        analysisDTO.setSuspendedMembers(suspendedMembers);
+
+        return analysisDTO;
+    }
+
 
 }
