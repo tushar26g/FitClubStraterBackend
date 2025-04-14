@@ -2,6 +2,7 @@ package com.example.gym_saas_backend.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -134,6 +135,16 @@ public class MemberRequestDto {
 
     public void setGymOwnerId(Long gymOwnerId) {
         this.gymOwnerId = gymOwnerId;
+    }
+
+    private MultipartFile profilePhoto;
+
+    public MultipartFile getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(MultipartFile profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 }
 

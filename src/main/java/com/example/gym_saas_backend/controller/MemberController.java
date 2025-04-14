@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,12 @@ public class MemberController {
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<Member>> addMember(HttpServletRequest request,
-                                                         @RequestBody MemberRequestDto dto) {
+                                                         @RequestPart("dto") MemberRequestDto dto,
+                                                         @RequestPart(value = "profilePhoto", required = false) MultipartFile profilePhoto) {
         try {
             Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
             dto.setGymOwnerId(gymOwnerId);
-            Member member = memberService.addMember(dto);
+            Member member = memberService.addMember(dto, profilePhoto);
             return ResponseEntity.ok(new ApiResponse<>(true, "Member added successfully", member));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(409).body(new ApiResponse<>(false, e.getMessage(), null));
