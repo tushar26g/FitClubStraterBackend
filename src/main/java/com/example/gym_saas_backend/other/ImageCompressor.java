@@ -11,13 +11,18 @@ public class ImageCompressor {
         ByteArrayInputStream in = new ByteArrayInputStream(inputImage);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        Thumbnails.of(in)
-                .scale(1.0)               // no resizing
-                .outputQuality(0.5f)      // 50% quality
-                .outputFormat("jpg")
-                .toOutputStream(out);
+        try {
+            Thumbnails.of(in)
+                    .scale(1.0)
+                    .outputQuality(0.5f)
+//                    .outputFormat("jpg")
+                    .toOutputStream(out);
+        } catch (IOException e) {
+            throw new IOException("Image compression failed. Ensure uploaded file is a valid image.", e);
+        }
 
         return out.toByteArray();
     }
+
 }
 
