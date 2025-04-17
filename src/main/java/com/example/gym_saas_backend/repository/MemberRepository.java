@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findByGymOwnerIdOrderByMembershipEndDateAsc(Long gymOwnerId);
 
-    @Query("SELECT m FROM Member m WHERE m.gymOwnerId = :gymOwnerId AND (m.mobileNumber = :mobileNumber OR m.email = :email)")
-    Optional<Member> findByGymOwnerIdAndMobileNumberOrEmail(Long gymOwnerId, String mobileNumber, String email);
+    @Query("SELECT m FROM Member m WHERE m.gymOwnerId = :gymOwnerId AND (m.mobileNumber = :mobileNumber)")
+    Optional<Member> findByGymOwnerIdAndMobileNumber(Long gymOwnerId, String mobileNumber);
 
     @Query("SELECT m FROM Member m WHERE m.gymOwnerId = :gymOwnerId AND " +
             "(LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +

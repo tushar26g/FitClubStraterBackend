@@ -29,7 +29,7 @@ public class MemberServiceImpl implements MemberService {
     public Member addMember(MemberRequestDto dto, MultipartFile profilePhoto) {
         // First check if member exists
         Optional<Member> existingMemberOpt = memberRepository
-                .findByGymOwnerIdAndMobileNumberOrEmail(dto.getGymOwnerId(), dto.getMobileNumber(), dto.getEmail());
+                .findByGymOwnerIdAndMobileNumber(dto.getGymOwnerId(), dto.getMobileNumber());
 
         if (existingMemberOpt.isPresent()) {
             Member existing = existingMemberOpt.get();
