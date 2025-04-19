@@ -226,23 +226,23 @@ public class Member {
         this.dateOfBirth = dob;
     }
 
-    private double heightCm;
+    private Double heightCm;
 
-    private double weightKg;
+    private Double weightKg;
 
-    public double getHeight() {
+    public Double getHeight() {
         return heightCm;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(Double height) {
         this.heightCm = height;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return weightKg;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         this.weightKg = weight;
     }
 }

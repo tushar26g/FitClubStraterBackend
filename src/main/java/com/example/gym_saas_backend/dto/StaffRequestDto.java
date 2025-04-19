@@ -18,6 +18,16 @@ public class StaffRequestDto {
     private String status; // ACTIVE/INACTIVE
     private String profilePhotoUrl;
     private Long gymOwnerId;
+    private LocalDate dob;
+    private String gender;
+
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
 
     public Long getGymOwnerId() {
         return gymOwnerId;
@@ -81,5 +91,13 @@ public class StaffRequestDto {
 
     public void setProfilePhotoUrl(String profilePhotoUrl) {
         this.profilePhotoUrl = profilePhotoUrl;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

@@ -35,7 +35,7 @@ public class StaffServiceImpl implements StaffService {
             if (existing.getStatus() == Staff.Status.INACTIVE) {
                 throw new IllegalStateException("This staff is inactive in your gym.");
             } else {
-                throw new IllegalStateException("This staff is already added to your gym.");
+                throw new IllegalStateException("This mobile number is already added to your gym.");
             }
         }
         Staff staff = new Staff();
@@ -45,6 +45,10 @@ public class StaffServiceImpl implements StaffService {
         staff.setJoiningDate(dto.getJoinDate());
         staff.setStatus(Staff.Status.valueOf("ACTIVE"));
         staff.setGymOwnerId(dto.getGymOwnerId());
+        staff.setDob(dto.getDob());
+        if(dto.getGender() != null && !dto.getGender().equals(""))
+            staff.setGender(Staff.Gender.valueOf(dto.getGender().toUpperCase()));
+
         if (profilePhoto != null && !profilePhoto.isEmpty()) {
             try {
                 byte[] compressed = ImageCompressor.compressImage(profilePhoto.getBytes());
