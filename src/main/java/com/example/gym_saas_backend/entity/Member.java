@@ -60,7 +60,7 @@ public class Member {
     }
 
     public enum PaymentMethod {
-        CASH, UPI
+        CASH, UPI, CARD
     }
 
     public Long getId() {
@@ -201,5 +201,48 @@ public class Member {
 
     public void setProfilePhoto(byte[] profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Member.Gender gender;
+
+    public enum Gender { MALE, FEMALE, OTHER }
+
+    private LocalDate dateOfBirth;
+
+    public Member.Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Member.Gender gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getDob() {
+        return dateOfBirth;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dateOfBirth = dob;
+    }
+
+    private double heightCm;
+
+    private double weightKg;
+
+    public double getHeight() {
+        return heightCm;
+    }
+
+    public void setHeight(double height) {
+        this.heightCm = height;
+    }
+
+    public double getWeight() {
+        return weightKg;
+    }
+
+    public void setWeight(double weight) {
+        this.weightKg = weight;
     }
 }

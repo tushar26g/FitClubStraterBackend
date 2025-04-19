@@ -51,7 +51,7 @@ public class Owner {
 
     public enum BusinessType { SINGLE, CHAIN, FRANCHISE }
     public enum Plan { BASIC, PREMIUM, PRO }
-    public enum PaymentMethod { CREDIT_CARD, BANK_TRANSFER, UPI }
+    public enum PaymentMethod { CREDIT_CARD, BANK_TRANSFER, UPI, CARD, CASH }
     public enum AccountStatus { TRIAL, ACTIVE, EXPIRED, SUSPENDED }
 
 
@@ -205,5 +205,28 @@ public class Owner {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Owner.Gender gender;
+
+    public enum Gender { MALE, FEMALE, OTHER }
+
+    private LocalDate dateOfBirth;
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getDob() {
+        return dateOfBirth;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dateOfBirth = dob;
     }
 }

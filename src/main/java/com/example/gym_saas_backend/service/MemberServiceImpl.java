@@ -36,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
             if (existing.getMembershipStatus() == Member.MembershipStatus.SUSPENDED) {
                 throw new IllegalStateException("This member is suspended in your gym.");
             } else {
-                throw new IllegalStateException("This member is already added to your gym.");
+                throw new IllegalStateException("This mobile number is already added to your gym.");
             }
         }
 
@@ -72,6 +72,19 @@ public class MemberServiceImpl implements MemberService {
 
         if (dto.getMembershipPhotoUrl() != null)
             member.setMembershipPhotoUrl(dto.getMembershipPhotoUrl());
+
+        if(dto.getDob() != null)
+            member.setDob(dto.getDob());
+
+        if(dto.getGender() != null && !dto.getGender().equals(""))
+            member.setGender(Member.Gender.valueOf(dto.getGender().toUpperCase()));
+
+//        if(dto.getHeight() != null)
+        if(dto.getHeight() != null )
+            member.setHeight(dto.getHeight());
+
+        if(dto.getWeight() != null)
+            member.setWeight(dto.getWeight());
 
         member.setGymOwnerId(dto.getGymOwnerId());
         return memberRepository.save(member);

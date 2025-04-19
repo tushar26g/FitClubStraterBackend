@@ -24,6 +24,10 @@ public class MemberRequestDto {
     private String membershipPhotoUrl;
     private Long gymOwnerId;
     private Long memberId;
+    private LocalDate dob;
+    private String gender;
+    private Double height;
+    private Double weight;
 
     public Long getMemberId() {
         return memberId;
@@ -145,6 +149,38 @@ public class MemberRequestDto {
 
     public void setProfilePhoto(MultipartFile profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 }
 

@@ -3,11 +3,14 @@ package com.example.gym_saas_backend.service;
 import com.example.gym_saas_backend.dto.StaffRequestDto;
 import com.example.gym_saas_backend.entity.Member;
 import com.example.gym_saas_backend.entity.Staff;
+import com.example.gym_saas_backend.other.ImageCompressor;
 import com.example.gym_saas_backend.repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -22,9 +25,9 @@ public class StaffServiceImpl implements StaffService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Staff addStaff(StaffRequestDto dto) {
+    public Staff addStaff(StaffRequestDto dto, MultipartFile profilePhoto) {
         Optional<Staff> existingStaffOpt = staffRepository
-                .findByGymOwnerIdAndMobileNumberOrEmail(dto.getGymOwnerId(), dto.getMobileNumber(), dto.getEmail());
+                .findByGymOwnerIdAndMobileNumber(dto.getGymOwnerId(), dto.getMobileNumber());
 
 
         if (existingStaffOpt.isPresent()) {
@@ -42,7 +45,14 @@ public class StaffServiceImpl implements StaffService {
         staff.setJoiningDate(dto.getJoinDate());
         staff.setStatus(Staff.Status.valueOf("ACTIVE"));
         staff.setGymOwnerId(dto.getGymOwnerId());
-        if(staff.getProfilePhotoUrl()!=null) staff.setProfilePhotoUrl(dto.getProfilePhotoUrl());
+        if (profilePhoto != null && !profilePhoto.isEmpty()) {
+            try {
+                byte[] compressed = ImageCompressor.compressImage(profilePhoto.getBytes());
+                staff.setProfilePhoto(compressed);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to compress profile photo", e);
+            }
+        }
         return staffRepository.save(staff);
     }
 

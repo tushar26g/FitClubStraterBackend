@@ -116,4 +116,39 @@ public class Staff {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    @Lob
+    @Column(name = "profile_photo", columnDefinition = "LONGBLOB")
+    private byte[] profilePhoto;
+
+    public byte[] getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(byte[] profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Staff.Gender gender;
+
+    public enum Gender { MALE, FEMALE, OTHER }
+
+    private LocalDate dateOfBirth;
+
+    public Staff.Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Staff.Gender gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getDob() {
+        return dateOfBirth;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dateOfBirth = dob;
+    }
 }

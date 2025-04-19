@@ -3,11 +3,12 @@ package com.example.gym_saas_backend.service;
 import com.example.gym_saas_backend.dto.StaffRequestDto;
 import com.example.gym_saas_backend.entity.Member;
 import com.example.gym_saas_backend.entity.Staff;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface StaffService {
-    Staff addStaff(StaffRequestDto dto);
+    Staff addStaff(StaffRequestDto dto, MultipartFile profilePhoto);
     Staff updateStaff(StaffRequestDto dto);
     boolean deleteStaffByIdAndOwnerId(Long staffId, Long gymOwnerId);
     void updateStaffStatus(Long gymOwnerId, Long staffId, String status);

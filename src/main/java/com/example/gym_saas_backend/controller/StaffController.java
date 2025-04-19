@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -22,11 +23,12 @@ public class StaffController {
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse<Staff>> addStaff(HttpServletRequest request,
-                                                       @RequestBody StaffRequestDto dto) {
+                                                       @RequestPart("dto") StaffRequestDto dto,
+                                                       @RequestPart(value = "profilePhoto", required = false) MultipartFile profilePhoto) {
         try {
             Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
             dto.setGymOwnerId(gymOwnerId);
-            Staff staff = staffService.addStaff(dto);
+            Staff staff = staffService.addStaff(dto, profilePhoto);
             return ResponseEntity.ok(new ApiResponse<>(true, "Staff added successfully", staff));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ApiResponse<>(false, e.getMessage(), null));

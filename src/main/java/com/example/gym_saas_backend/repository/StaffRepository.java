@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface StaffRepository extends JpaRepository<Staff, Long> {
     Optional<Staff> findByIdAndGymOwnerId(Long id, Long gymOwnerId);
 
-    @Query("SELECT m FROM Staff m WHERE m.gymOwnerId = :gymOwnerId AND (m.mobileNumber = :mobileNumber OR m.email = :email)")
-    Optional<Staff> findByGymOwnerIdAndMobileNumberOrEmail(Long gymOwnerId, String mobileNumber, String email);
+    @Query("SELECT m FROM Staff m WHERE m.gymOwnerId = :gymOwnerId AND (m.mobileNumber = :mobileNumber)")
+    Optional<Staff> findByGymOwnerIdAndMobileNumber(Long gymOwnerId, String mobileNumber);
 
     // 1. Get all staff for a gym owner, ordered by status
     List<Staff> findByGymOwnerIdOrderByStatusAsc(Long gymOwnerId);
