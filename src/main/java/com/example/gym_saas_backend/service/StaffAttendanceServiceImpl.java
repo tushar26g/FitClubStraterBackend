@@ -29,9 +29,9 @@ public class StaffAttendanceServiceImpl implements StaffAttendanceService {
         LocalDate date = dto.getDate() != null ? dto.getDate() : LocalDate.now();
 
         Optional<StaffAttendance> existing = repo.findByStaffIdAndDate(dto.getStaffId(), date);
-        if (existing.isPresent()) {
-            throw new RuntimeException("Attendance already marked");
-        }
+//        if (existing.isPresent()) {
+//            throw new RuntimeException("Attendance already marked");
+//        }
 
         StaffAttendance att = new StaffAttendance();
         att.setStaffId(dto.getStaffId());
@@ -67,8 +67,8 @@ public class StaffAttendanceServiceImpl implements StaffAttendanceService {
         return repo.searchWithFilters(gymOwnerId, search == null ? "" : search, start, end);
     }
 
-    public List<StaffAttendanceResponseDTO> getStaffAttendanceHistory(Long gymOwnerId, Long staffId, LocalDate start, LocalDate end) {
-        return repo.getAttendanceForStaff(gymOwnerId, staffId, start, end);
+    public List<StaffAttendance> getStaffAttendanceHistory(Long gymOwnerId, Long staffId) {
+        return repo.getAttendanceForStaff(gymOwnerId, staffId);
     }
 
 }

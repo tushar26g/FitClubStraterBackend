@@ -12,6 +12,6 @@ public interface StaffAttendanceService {
     void markAttendance(Long gymOwnerId, StaffAttendanceDTO dto);
     void markLeaveRange(Long gymOwnerId, LeaveRequestDTO dto);
     List<StaffAttendanceResponseDTO> getHistory(Long gymOwnerId, String search, LocalDate startDate, LocalDate endDate);
-    List<StaffAttendanceResponseDTO> getStaffAttendanceHistory(Long gymOwnerId, Long staffId, LocalDate start, LocalDate end);
+    List<StaffAttendance> getStaffAttendanceHistory(Long gymOwnerId, Long staffId);
 }
 

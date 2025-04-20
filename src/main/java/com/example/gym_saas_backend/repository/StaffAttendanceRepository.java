@@ -42,24 +42,11 @@ public interface StaffAttendanceRepository extends JpaRepository<StaffAttendance
 
 
 
-    @Query("SELECT new com.example.gym_saas_backend.dto.StaffAttendanceResponseDTO(" +
-            "a.id, a.staffId, a.date, CAST(a.status AS string), " +  // Casting enum to String
-            "s.name, s.mobileNumber, s.email, s.joiningDate, " +
-            "s.gymOwnerId, s.status, s.profilePhotoUrl, s.createdAt) " +
+    @Query("SELECT a " +  // Casting enum to Strin
             "FROM StaffAttendance a " +
-            "JOIN Staff s ON a.staffId = s.id " +
-            "WHERE a.gymOwnerId = :gymOwnerId AND a.staffId = :staffId " +
-            "AND (:startDate IS NULL OR a.date >= :startDate) " +
-            "AND (:endDate IS NULL OR a.date <= :endDate) " +
-            "ORDER BY a.date DESC")
-    List<StaffAttendanceResponseDTO> getAttendanceForStaff(
+            "WHERE a.gymOwnerId = :gymOwnerId AND a.staffId = :staffId ")
+    List<StaffAttendance> getAttendanceForStaff(
             Long gymOwnerId,
-            Long staffId,
-            LocalDate startDate,
-            LocalDate endDate
+            Long staffId
     );
-
-
-
-
 }

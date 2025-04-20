@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Owner registerOwner(RegisterRequest request) {
-        if (ownerRepository.existsByEmail(request.getEmail())) {
+        if (request.getEmail() != null && ownerRepository.existsByEmail(request.getEmail().toLowerCase())) {
             throw new RuntimeException("Email already registered");
         }
 
@@ -44,7 +44,8 @@ public class AuthServiceImpl implements AuthService {
         try {
             Owner owner = new Owner();
             owner.setFullName(request.getFullName());
-            owner.setEmail(request.getEmail());
+            if(request.getEmail() != null)
+                owner.setEmail(request.getEmail().toLowerCase());
             owner.setPassword(passwordEncoder.encode(request.getPassword()));
             owner.setMobileNumber(request.getMobileNumber());
             owner.setBusinessName(request.getBusinessName());
@@ -88,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserAuthResult authenticateUser(LoginRequest request) {
-        String identifier = request.getIdentifier().trim();
+        String identifier = request.getIdentifier().trim().toLowerCase();
         String password = request.getPassword();
 
         // 1. Admin login (hardcoded)

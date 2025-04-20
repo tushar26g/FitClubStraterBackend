@@ -55,14 +55,12 @@ public class StaffAttendanceController {
     }
 
     @GetMapping("/staff/{staffId}/attendance")
-    public ResponseEntity<ApiResponse<List<StaffAttendanceResponseDTO>>> getStaffAttendance(
+    public ResponseEntity<ApiResponse<List<StaffAttendance>>> getStaffAttendance(
             HttpServletRequest request,
-            @PathVariable Long staffId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+            @PathVariable Long staffId
     ) {
         Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
-        List<StaffAttendanceResponseDTO> attendance = attendanceService.getStaffAttendanceHistory(gymOwnerId, staffId, startDate, endDate);
+        List<StaffAttendance> attendance = attendanceService.getStaffAttendanceHistory(gymOwnerId, staffId);
         return ResponseEntity.ok(new ApiResponse<>(true, "Fetched successfully", attendance));
     }
 
