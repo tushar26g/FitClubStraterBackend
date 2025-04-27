@@ -128,11 +128,12 @@ public class MemberController {
 
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<Member>> updateMember(HttpServletRequest request,
-                                                            @RequestBody MemberRequestDto dto) {
+                                                            @RequestPart("dto") MemberRequestDto dto,
+                                                            @RequestPart(value = "profilePhoto", required = false) MultipartFile profilePhoto) {
         try {
             Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
             dto.setGymOwnerId(gymOwnerId);
-            Member updatedMember = memberService.updateMember(dto);
+            Member updatedMember = memberService.updateMember(dto, profilePhoto);
             return ResponseEntity.ok(new ApiResponse<>(true, "Member updated successfully", updatedMember));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body(new ApiResponse<>(false, e.getMessage(), null));

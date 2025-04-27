@@ -13,7 +13,7 @@ public interface MemberService {
     void updateMembershipStatus(Long gymOwnerId, Long memberId, Member.MembershipStatus status);
     List<Member> getMembersByOwnerAndStatus(Long gymOwnerId, Member.MembershipStatus status);
     List<Member> searchMembersWithStatus(Long gymOwnerId, String search, Member.MembershipStatus status);
-    Member updateMember(MemberRequestDto dto);
+    Member updateMember(MemberRequestDto dto, MultipartFile profilePhoto);
     AnalysisDTO analysisMembers(Long gymOwnerId);
 
 }

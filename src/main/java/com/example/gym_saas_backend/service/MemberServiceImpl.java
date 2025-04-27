@@ -128,7 +128,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member updateMember(MemberRequestDto dto) {
+    public Member updateMember(MemberRequestDto dto, MultipartFile profilePhoto) {
         // Fetch existing member using ID and gymOwnerId
         Member existing = memberRepository.findByIdAndGymOwnerId(dto.getMemberId(), dto.getGymOwnerId())
                 .orElseThrow(() -> new NoSuchElementException("Member not found or does not belong to your gym."));
@@ -149,6 +149,14 @@ public class MemberServiceImpl implements MemberService {
         if (dto.getPaymentMethod() != null)
             existing.setPaymentMethod(Member.PaymentMethod.valueOf(dto.getPaymentMethod().toUpperCase()));
         if (dto.getMembershipPhotoUrl() != null) existing.setMembershipPhotoUrl(dto.getMembershipPhotoUrl());
+        if (profilePhoto != null && !profilePhoto.isEmpty()) {
+            try {
+                byte[] compressed = ImageCompressor.compressImage(profilePhoto.getBytes());
+                existing.setProfilePhoto(compressed);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to compress profile photo", e);
+            }
+        }
         return memberRepository.save(existing);
     }
 
