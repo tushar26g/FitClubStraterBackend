@@ -157,6 +157,12 @@ public class MemberServiceImpl implements MemberService {
                 throw new RuntimeException("Failed to compress profile photo", e);
             }
         }
+        if(dto.getGender() != null) existing.setGender(Member.Gender.valueOf(dto.getGender().toUpperCase()));
+        if(dto.getHeight() != null )
+            existing.setHeight(dto.getHeight());
+
+        if(dto.getWeight() != null)
+            existing.setWeight(dto.getWeight());
         return memberRepository.save(existing);
     }
 

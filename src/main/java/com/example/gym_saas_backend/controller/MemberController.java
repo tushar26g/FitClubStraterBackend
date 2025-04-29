@@ -16,9 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/members")
@@ -153,4 +151,46 @@ public class MemberController {
         }
     }
 
+    @PostMapping("/import-members")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> importMembers(
+            HttpServletRequest request,
+            @RequestBody List<MemberRequestDto> memberDtos) {
+
+        Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
+
+        List<Member> importedMembers = new ArrayList<>();
+        List<Map<String, Object>> failedMembers = new ArrayList<>();
+
+        for (int i = 0; i < memberDtos.size(); i++) {
+            MemberRequestDto dto = memberDtos.get(i);
+            dto.setGymOwnerId(gymOwnerId);
+
+            try {
+                Member saved = memberService.addMember(dto, null); // No profile photo in import
+                importedMembers.add(saved);
+            } catch (IllegalStateException e) {
+                Map<String, Object> failureInfo = new HashMap<>();
+                failureInfo.put("row", i + 1); // Excel-like 1-based row index
+                failureInfo.put("mobileNumber", dto.getMobileNumber());
+                failureInfo.put("name", dto.getName());
+                failureInfo.put("reason", e.getMessage());
+                failedMembers.add(failureInfo);
+            } catch (Exception e) {
+                Map<String, Object> failureInfo = new HashMap<>();
+                failureInfo.put("row", i + 1);
+                failureInfo.put("mobileNumber", dto.getMobileNumber());
+                failureInfo.put("name", dto.getName());
+                failureInfo.put("reason", "Unexpected error: " + e.getMessage());
+                failedMembers.add(failureInfo);
+            }
+        }
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("imported", importedMembers);
+        responseData.put("failed", failedMembers);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Import completed with results", responseData)
+        );
+    }
 }
