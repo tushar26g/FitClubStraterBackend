@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface StaffService {
     Staff addStaff(StaffRequestDto dto, MultipartFile profilePhoto);
-    Staff updateStaff(StaffRequestDto dto);
+    Staff updateStaff(StaffRequestDto dto, MultipartFile profilePhoto);
     boolean deleteStaffByIdAndOwnerId(Long staffId, Long gymOwnerId);
     void updateStaffStatus(Long gymOwnerId, Long staffId, String status);
 //    void updatePassword(Long staffId, Long gymOwnerId, String newPassword);

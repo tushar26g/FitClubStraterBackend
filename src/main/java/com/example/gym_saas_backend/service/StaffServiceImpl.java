@@ -61,7 +61,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Staff updateStaff(StaffRequestDto dto) {
+    public Staff updateStaff(StaffRequestDto dto, MultipartFile profilePhoto) {
         Staff staff = staffRepository.findByIdAndGymOwnerId(dto.getStaffId(), dto.getGymOwnerId())
                 .orElseThrow(() -> new NoSuchElementException("Staff not found"));
 
@@ -71,6 +71,14 @@ public class StaffServiceImpl implements StaffService {
         if(dto.getJoinDate()!=null) staff.setJoiningDate(dto.getJoinDate());
         if(dto.getStatus()!=null) staff.setStatus(Staff.Status.valueOf(dto.getStatus().toUpperCase()));
         if(dto.getProfilePhotoUrl()!=null) staff.setProfilePhotoUrl(dto.getProfilePhotoUrl());
+        if (profilePhoto != null && !profilePhoto.isEmpty()) {
+            try {
+                byte[] compressed = ImageCompressor.compressImage(profilePhoto.getBytes());
+                staff.setProfilePhoto(compressed);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to compress profile photo", e);
+            }
+        }
         return staffRepository.save(staff);
     }
 

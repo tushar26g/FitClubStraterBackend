@@ -37,11 +37,12 @@ public class StaffController {
 
     @PutMapping("/update")
     public ResponseEntity<ApiResponse<Staff>> updateStaff(HttpServletRequest request,
-                                                          @RequestBody StaffRequestDto dto) {
+                                                          @RequestPart("dto") StaffRequestDto dto,
+                                                          @RequestPart(value = "profilePhoto", required = false) MultipartFile profilePhoto)  {
         try {
             Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
             dto.setGymOwnerId(gymOwnerId);
-            Staff updated = staffService.updateStaff(dto);
+            Staff updated = staffService.updateStaff(dto, profilePhoto);
             return ResponseEntity.ok(new ApiResponse<>(true, "Staff updated successfully", updated));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body(new ApiResponse<>(false, e.getMessage(), null));
