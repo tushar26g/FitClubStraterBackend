@@ -140,7 +140,10 @@ public class MemberServiceImpl implements MemberService {
         if (dto.getPackageName() != null) existing.setPackageName(dto.getPackageName());
         if (dto.getPaymentStatus() != null)
             existing.setPaymentStatus(Member.PaymentStatus.valueOf(dto.getPaymentStatus().toUpperCase()));
-        if (dto.getAmountPaid() != null) existing.setAmountPaid(dto.getAmountPaid());
+        if (dto.getAmountPaid() != null){
+            existing.setAmountPaid(dto.getAmountPaid());
+            existing.setMembershipStatus(Member.MembershipStatus.valueOf("ACTIVE"));
+        }
         if (dto.getMobileNumber() != null) existing.setMobileNumber(dto.getMobileNumber());
         if (dto.getEmail() != null) existing.setEmail(dto.getEmail());
         if (dto.getMembershipStatus() != null)
@@ -163,6 +166,8 @@ public class MemberServiceImpl implements MemberService {
 
         if(dto.getWeight() != null)
             existing.setWeight(dto.getWeight());
+        if(dto.getMembershipRenewDate() != null)
+            existing.setMembershipRenewDate(dto.getMembershipRenewDate());
         return memberRepository.save(existing);
     }
 

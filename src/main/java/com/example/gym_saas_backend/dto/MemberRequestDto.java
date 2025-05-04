@@ -28,6 +28,7 @@ public class MemberRequestDto {
     private String gender;
     private Double height;
     private Double weight;
+    private LocalDate membershipRenewDate;
 
     public Long getMemberId() {
         return memberId;
@@ -181,6 +182,14 @@ public class MemberRequestDto {
 
     public void setWeight(Double weight) {
         this.weight = weight;
+    }
+
+    public LocalDate getMembershipRenewDate() {
+        return membershipRenewDate;
+    }
+
+    public void setMembershipRenewDate(LocalDate membershipRenewDate) {
+        this.membershipRenewDate = membershipRenewDate;
     }
 }
 

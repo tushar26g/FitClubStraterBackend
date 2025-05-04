@@ -1,14 +1,12 @@
 package com.example.gym_saas_backend.controller;
 
-import com.example.gym_saas_backend.dto.AuthResponse;
-import com.example.gym_saas_backend.dto.LoginRequest;
-import com.example.gym_saas_backend.dto.RegisterRequest;
-import com.example.gym_saas_backend.dto.UserAuthResult;
+import com.example.gym_saas_backend.dto.*;
 import com.example.gym_saas_backend.entity.Owner;
 import com.example.gym_saas_backend.service.AuthService;
 import com.example.gym_saas_backend.service.RefreshTokenService;
 import com.example.gym_saas_backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,6 +78,31 @@ public class AuthController {
                     .status(401)
                     .body(new AuthResponse(false, "Login failed: " + e.getMessage(), null, null, null));
         }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refreshAccessToken(@RequestBody RefreshTokenRequest request) {
+        String refreshToken1 = request.getRefreshToken();
+        Owner gymOwner = request.getGymOwner();
+        Long gymOwnerId = gymOwner.getId();
+        boolean isValid = refreshTokenService.validateAndDelete(refreshToken1, gymOwnerId);
+        if (!isValid) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(false, "Invalid or expired refresh token", null, null, null));
+        }
+
+        // Generate new access token
+        String email = request.getEmailId();
+        String role = "OWNER";
+        String accessToken = jwtUtil.generateToken(email, role, gymOwnerId);
+
+        // Generate new refresh token and store it
+        String refreshToken = UUID.randomUUID().toString();
+        refreshTokenService.saveRefreshToken(refreshToken, gymOwnerId);
+
+        return ResponseEntity.ok(
+                new AuthResponse(true, "Token refreshed", accessToken, refreshToken, gymOwner)
+        );
     }
 
 

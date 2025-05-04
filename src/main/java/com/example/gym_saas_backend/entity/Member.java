@@ -40,6 +40,7 @@ public class Member {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDate membershipRenewDate;
 
     @PrePersist
     public void onCreate() {
@@ -244,5 +245,37 @@ public class Member {
 
     public void setWeight(Double weight) {
         this.weightKg = weight;
+    }
+
+    public LocalDate getMembershipRenewDate() {
+        return membershipRenewDate;
+    }
+
+    public void setMembershipRenewDate(LocalDate membershipRenewDate) {
+        this.membershipRenewDate = membershipRenewDate;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Double getHeightCm() {
+        return heightCm;
+    }
+
+    public void setHeightCm(Double heightCm) {
+        this.heightCm = heightCm;
+    }
+
+    public Double getWeightKg() {
+        return weightKg;
+    }
+
+    public void setWeightKg(Double weightKg) {
+        this.weightKg = weightKg;
     }
 }

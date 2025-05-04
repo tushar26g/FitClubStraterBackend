@@ -33,5 +33,15 @@ public class RefreshTokenServiceIMPL implements RefreshTokenService {
     public void deleteToken(String token) {
         repository.deleteByToken(token);
     }
+
+    public boolean validateAndDelete(String token, Long gymOwnerId) {
+        Optional<RefreshToken> refreshTokenOpt = repository.findByTokenAndGymOwnerId(token, gymOwnerId);
+        if (refreshTokenOpt.isPresent()) {
+            repository.delete(refreshTokenOpt.get());
+            return true;
+        }
+        return false;
+    }
+
 }
 

@@ -4,4 +4,5 @@ public interface RefreshTokenService {
     void saveRefreshToken(String token, Long ownerId);
     boolean isValid(String token, Long ownerId);
     void deleteToken(String token);
+    boolean validateAndDelete(String token, Long gymOwnerId);
 }
