@@ -5,6 +5,7 @@ import com.example.gym_saas_backend.dto.RegisterRequest;
 import com.example.gym_saas_backend.dto.UserAuthResult;
 import com.example.gym_saas_backend.entity.Owner;
 import com.example.gym_saas_backend.entity.Staff;
+import com.example.gym_saas_backend.other.ImageCompressor;
 import com.example.gym_saas_backend.repository.OwnerRepository;
 import com.example.gym_saas_backend.repository.StaffRepository;
 import com.example.gym_saas_backend.util.JwtUtil;
@@ -12,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -32,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     private StaffRepository staffRepository;
 
     @Override
-    public Owner registerOwner(RegisterRequest request) {
+    public Owner registerOwner(RegisterRequest request, MultipartFile profilePhoto) {
         if (request.getEmail() != null && ownerRepository.existsByEmail(request.getEmail().toLowerCase())) {
             throw new RuntimeException("Email already registered");
         }
@@ -59,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
             }
 
             owner.setAddress(request.getAddress());
-            owner.setSelectedPlan(Owner.Plan.valueOf(request.getSelectedPlan().toUpperCase()));
+            owner.setSelectedPlan(Owner.Plan.valueOf("BASIC"));
 
             if (request.getPaymentMethod() != null) {
                 owner.setPaymentMethod(Owner.PaymentMethod.valueOf(
@@ -67,14 +70,21 @@ public class AuthServiceImpl implements AuthService {
             }
 
             owner.setTimezone(request.getTimezone() != null ? request.getTimezone() : "Asia/Kolkata");
-            owner.setProfilePictureUrl(request.getProfilePictureUrl());
+//            owner.setProfilePictureUrl(request.getProfilePictureUrl());
 
             // Set trial and membership
             LocalDate today = LocalDate.now();
-            owner.setTrialEndDate(today.plusDays(90));
-            owner.setMembershipEndDate(today.plusYears(1));
+            owner.setTrialEndDate(today.plusDays(100));
+//            owner.setMembershipEndDate(today.plusYears(1));
             owner.setAccountStatus(Owner.AccountStatus.TRIAL);
-
+            if (profilePhoto != null && !profilePhoto.isEmpty()) {
+                try {
+                    byte[] compressed = ImageCompressor.compressImage(profilePhoto.getBytes());
+                    owner.setProfilePhoto(compressed);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to compress profile photo", e);
+                }
+            }
             Owner savedOwner = ownerRepository.save(owner);
 
             // Optionally set JWT token in Owner object (if you have a field or want to return separately)

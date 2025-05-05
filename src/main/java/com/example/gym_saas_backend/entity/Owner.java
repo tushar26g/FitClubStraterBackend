@@ -229,4 +229,16 @@ public class Owner {
     public void setDob(LocalDate dob) {
         this.dateOfBirth = dob;
     }
+
+    @Lob
+    @Column(name = "profile_photo", columnDefinition = "LONGBLOB")
+    private byte[] profilePhoto;
+
+    public byte[] getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(byte[] profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
 }
