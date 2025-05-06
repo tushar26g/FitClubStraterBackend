@@ -5,6 +5,7 @@ import com.example.gym_saas_backend.dto.ApiResponse;
 import com.example.gym_saas_backend.dto.MemberRequestDto;
 import com.example.gym_saas_backend.dto.UpdateMembershipStatusRequest;
 import com.example.gym_saas_backend.entity.Member;
+import com.example.gym_saas_backend.entity.Owner;
 import com.example.gym_saas_backend.service.MemberService;
 import com.example.gym_saas_backend.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -152,45 +153,16 @@ public class MemberController {
     }
 
     @PostMapping("/import-members")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> importMembers(
-            HttpServletRequest request,
-            @RequestBody List<MemberRequestDto> memberDtos) {
-
-        Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
-
-        List<Member> importedMembers = new ArrayList<>();
-        List<Map<String, Object>> failedMembers = new ArrayList<>();
-
-        for (int i = 0; i < memberDtos.size(); i++) {
-            MemberRequestDto dto = memberDtos.get(i);
-            dto.setGymOwnerId(gymOwnerId);
-
-            try {
-                Member saved = memberService.addMember(dto, null); // No profile photo in import
-                importedMembers.add(saved);
-            } catch (IllegalStateException e) {
-                Map<String, Object> failureInfo = new HashMap<>();
-                failureInfo.put("row", i + 1); // Excel-like 1-based row index
-                failureInfo.put("mobileNumber", dto.getMobileNumber());
-                failureInfo.put("name", dto.getName());
-                failureInfo.put("reason", e.getMessage());
-                failedMembers.add(failureInfo);
-            } catch (Exception e) {
-                Map<String, Object> failureInfo = new HashMap<>();
-                failureInfo.put("row", i + 1);
-                failureInfo.put("mobileNumber", dto.getMobileNumber());
-                failureInfo.put("name", dto.getName());
-                failureInfo.put("reason", "Unexpected error: " + e.getMessage());
-                failedMembers.add(failureInfo);
-            }
+    public ResponseEntity<String> importMembers(
+            @RequestPart("excelFile") MultipartFile file,
+            @RequestPart("ownerId") String ownerId,
+            @RequestPart("name") String name
+    )  {
+        try {
+            memberService.sendExcelToEmail(file, ownerId);
+            return ResponseEntity.ok("Email sent successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to send Excel file: " + e.getMessage());
         }
-
-        Map<String, Object> responseData = new HashMap<>();
-        responseData.put("imported", importedMembers);
-        responseData.put("failed", failedMembers);
-
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Import completed with results", responseData)
-        );
     }
 }

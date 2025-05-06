@@ -191,5 +191,8 @@ public class MemberServiceImpl implements MemberService {
         return analysisDTO;
     }
 
+    @Override
+    public void sendExcelToEmail(MultipartFile file, String owner){
 
+    }
 }
