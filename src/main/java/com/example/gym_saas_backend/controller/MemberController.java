@@ -156,12 +156,18 @@ public class MemberController {
     public ResponseEntity<String> importMembers(
             @RequestPart("excelFile") MultipartFile file,
             @RequestPart("ownerId") String ownerId,
-            @RequestPart("name") String name
+            @RequestPart("name") String name,
+            @RequestPart("mobileNumber") String mobileNumber
     )  {
         try {
-            memberService.sendExcelToEmail(file, ownerId);
-            return ResponseEntity.ok("Email sent successfully.");
+            boolean isSent = memberService.sendExcelToEmail(file, ownerId, name, mobileNumber);
+            if (isSent) {
+                return ResponseEntity.ok("Email sent successfully.");
+            } else {
+                return ResponseEntity.status(500).body("Failed to send email.");
+            }
         } catch (Exception e) {
+
             return ResponseEntity.status(500).body("Failed to send Excel file: " + e.getMessage());
         }
     }
