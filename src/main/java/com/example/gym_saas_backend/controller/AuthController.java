@@ -38,11 +38,11 @@ public class AuthController {
             }
 
             // Generate JWT Token valid for 21 days
-            String accessToken = jwtUtil.generateToken(owner.getEmail(), "OWNER", owner.getId());
+            String accessToken = jwtUtil.generateToken(owner.getMobileNumber(), "OWNER", owner.getId());
 
             // Save token to refresh_tokens table
             String refreshToken = UUID.randomUUID().toString();
-            refreshTokenService.saveRefreshToken(refreshToken, owner.getId());// inject via @Autowired or constructor
+//            refreshTokenService.saveRefreshToken(refreshToken, owner.getId());// inject via @Autowired or constructor
 
             return ResponseEntity.status(201).body(
                     new AuthResponse(true, "Registration successful", accessToken, refreshToken, owner)
@@ -60,13 +60,13 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
             UserAuthResult result = authService.authenticateUser(request);
-            String accessToken = jwtUtil.generateToken(result.getEmail(), result.getRole(), result.getId());
+            String accessToken = jwtUtil.generateToken(result.getOwner().getMobileNumber(), result.getRole(), result.getId());
 
             String refreshToken = "";
             if(!result.getRole().equals("ADMIN")) {
                 // Generate refresh token and store in DB
                 refreshToken = UUID.randomUUID().toString(); // or use JWT for it too
-                refreshTokenService.saveRefreshToken(refreshToken, result.getId());
+//                refreshTokenService.saveRefreshToken(refreshToken, result.getId());
             }
             else{
                 refreshToken = "Tushar";
