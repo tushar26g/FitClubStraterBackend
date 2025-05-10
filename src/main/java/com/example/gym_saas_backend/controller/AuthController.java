@@ -5,9 +5,14 @@ import com.example.gym_saas_backend.entity.Owner;
 import com.example.gym_saas_backend.service.AuthService;
 import com.example.gym_saas_backend.service.RefreshTokenService;
 import com.example.gym_saas_backend.util.JwtUtil;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +30,12 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Value("${app.send.excel.to}")
+    private String recipientEmail;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestPart("dto") RegisterRequest dto,
@@ -107,5 +118,22 @@ public class AuthController {
         );
     }
 
+    @PostMapping("/contact")
+    public String sendContactQuery(@RequestBody ContactRequest request) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(recipientEmail);
+        helper.setSubject("New Contact Query from Website");
+        helper.setText(
+                "Name: " + request.getName() + "\n" +
+                        "Mobile Number: " + request.getMobileNumber() + "\n" +
+                        "Query: " + request.getQuery(),
+                false
+        );
+
+        mailSender.send(message);
+        return "Message sent";
+    }
 
 }
