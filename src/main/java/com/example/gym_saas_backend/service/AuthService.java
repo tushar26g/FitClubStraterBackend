@@ -12,5 +12,5 @@ public interface AuthService {
 //    AuthResponse login(LoginRequest request);
     Owner registerOwner(RegisterRequest request, MultipartFile profilePhoto);
     UserAuthResult authenticateUser(LoginRequest request);
-
+    void processForgotPassword(String mobileNumber);
 }

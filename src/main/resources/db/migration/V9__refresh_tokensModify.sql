@@ -1,0 +1,3 @@
+ALTER TABLE refresh_tokens
+ADD COLUMN token_type VARCHAR(50) DEFAULT 'REFRESH',
+ADD COLUMN expiry_date DATETIME;

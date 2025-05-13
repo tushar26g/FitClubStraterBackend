@@ -2,6 +2,8 @@ package com.example.gym_saas_backend.controller;
 
 import com.example.gym_saas_backend.dto.*;
 import com.example.gym_saas_backend.entity.Owner;
+import com.example.gym_saas_backend.entity.RefreshToken;
+import com.example.gym_saas_backend.repository.OwnerRepository;
 import com.example.gym_saas_backend.service.AuthService;
 import com.example.gym_saas_backend.service.RefreshTokenService;
 import com.example.gym_saas_backend.util.JwtUtil;
@@ -13,9 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
@@ -36,6 +41,12 @@ public class AuthController {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private OwnerRepository ownerRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestPart("dto") RegisterRequest dto,
@@ -135,5 +146,27 @@ public class AuthController {
         mailSender.send(message);
         return "Message sent";
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        authService.processForgotPassword(request.getMobileNumber());
+        return ResponseEntity.ok(Map.of("message", "Reset password link sent to your registered email."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        RefreshToken token = refreshTokenService.validateResetToken(request.getToken());
+
+        Owner owner = ownerRepository.findById(token.getOwnerId())
+                .orElseThrow(() -> new NoSuchElementException("Owner not found"));
+
+        refreshTokenService.invalidateResetToken(request.getToken());
+
+        owner.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        ownerRepository.save(owner);
+
+        return ResponseEntity.ok(Map.of("message", "Password reset successful."));
+    }
+
 
 }

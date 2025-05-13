@@ -1,12 +1,15 @@
 package com.example.gym_saas_backend.service;
 
+import com.example.gym_saas_backend.entity.Owner;
 import com.example.gym_saas_backend.entity.RefreshToken;
 import com.example.gym_saas_backend.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class RefreshTokenServiceIMPL implements RefreshTokenService {
@@ -41,6 +44,42 @@ public class RefreshTokenServiceIMPL implements RefreshTokenService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String generateResetToken(Owner owner) {
+        String tokenStr = UUID.randomUUID().toString();
+
+        RefreshToken token = new RefreshToken();
+        token.setToken(tokenStr);
+        token.setOwnerId(owner.getId());
+        token.setTokenType("RESET");
+        token.setCreatedAt(LocalDateTime.now());
+        token.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+
+        repository.save(token);
+        return tokenStr;
+    }
+
+    @Override
+    public RefreshToken validateResetToken(String tokenStr) {
+        RefreshToken token = repository.findByTokenAndTokenType(tokenStr, "RESET")
+                .orElseThrow(() -> new IllegalArgumentException("Invalid reset token"));
+
+        if (token.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Reset token has expired");
+        }
+
+        return token;
+    }
+
+    @Override
+    @Transactional // ✅ Required for delete to work
+    public void invalidateResetToken(String tokenStr) {
+        if (tokenStr == null || tokenStr.isEmpty()) {
+            throw new IllegalArgumentException("Token cannot be null or empty");
+        }
+        repository.deleteByToken(tokenStr);
     }
 
 }

@@ -21,6 +21,11 @@ public class RefreshToken {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+    @Column(name = "token_type")
+    private String tokenType; // "REFRESH" or "RESET"
+
+    @Column(name = "expiry_date")
+    private LocalDateTime expiryDate;
 
     // Constructors
     public RefreshToken() {
@@ -59,5 +64,21 @@ public class RefreshToken {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDateTime expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
     }
 }

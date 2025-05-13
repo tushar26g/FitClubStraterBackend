@@ -39,5 +39,6 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
     @Query("SELECT COUNT(o) FROM Owner o WHERE MONTH(o.createdAt) = :month AND YEAR(o.createdAt) = :year")
     Long countOwnersJoinedInMonth(int month, int year);
 
+    Optional<Owner> findByMobileNumber(String mobileNumber);
 }
 

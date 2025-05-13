@@ -34,6 +34,12 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private StaffRepository staffRepository;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
     @Override
     public Owner registerOwner(RegisterRequest request, MultipartFile profilePhoto) {
         if (request.getEmail() != null && ownerRepository.existsByEmail(request.getEmail().toLowerCase())) {
@@ -128,6 +134,27 @@ public class AuthServiceImpl implements AuthService {
 //        }
 
         throw new RuntimeException("User not found");
+    }
+
+    @Override
+    public void processForgotPassword(String mobileNumber) {
+        Owner owner = ownerRepository.findByMobileNumber(mobileNumber)
+                .orElseThrow(() -> new RuntimeException("User with given mobile number not found"));
+
+        if (owner.getEmail() == null || owner.getEmail().isBlank()) {
+            throw new RuntimeException("Registered email not found for this account.");
+        }
+
+        String token = refreshTokenService.generateResetToken(owner);
+        String resetLink = "http://localhost:3000/reset-password?token=" + token;
+
+        String subject = "Password Reset Request";
+        String body = "Hi " + owner.getFullName() + ",\n\n"
+                + "Click the link below to reset your password:\n"
+                + resetLink + "\n\n"
+                + "This link will expire in 30 minutes.";
+
+        emailService.sendEmail(owner.getEmail(), subject, body);
     }
 
 }

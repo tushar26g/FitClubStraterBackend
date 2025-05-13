@@ -12,5 +12,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     @Query("SELECT m FROM RefreshToken m WHERE m.ownerId = :gymOwnerId AND (m.token = :token)")
     Optional<RefreshToken> findByTokenAndGymOwnerId(String token, Long gymOwnerId);
+
+    Optional<RefreshToken> findByTokenAndTokenType(String token, String tokenType);
 }
 
