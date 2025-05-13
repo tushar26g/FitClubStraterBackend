@@ -20,7 +20,7 @@ public class JwtUtil {
                 .claim("role", role)
                 .claim("gymOwnerId", gymOwnerId)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
+                .setExpiration(new Date(System.currentTimeMillis() + 60L * 24 * 60 * 60 * 1000)) // 21 days
                 .signWith(key)
                 .compact();
     }

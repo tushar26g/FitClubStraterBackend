@@ -171,4 +171,15 @@ public class MemberController {
             return ResponseEntity.status(500).body("Failed to send Excel file: " + e.getMessage());
         }
     }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, @RequestParam(required = true) String mobileNumber) {
+        Long gymOwnerId = (Long) request.getAttribute("gymOwnerId");
+        String role = (String) request.getAttribute("role");
+
+        String newAccessToken = jwtUtil.generateToken(mobileNumber, role, gymOwnerId);
+
+        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+    }
+
 }
