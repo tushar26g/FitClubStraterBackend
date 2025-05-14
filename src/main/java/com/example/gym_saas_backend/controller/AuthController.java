@@ -6,6 +6,7 @@ import com.example.gym_saas_backend.entity.RefreshToken;
 import com.example.gym_saas_backend.repository.OwnerRepository;
 import com.example.gym_saas_backend.service.AuthService;
 import com.example.gym_saas_backend.service.RefreshTokenService;
+import com.example.gym_saas_backend.service.SmsService;
 import com.example.gym_saas_backend.util.JwtUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -27,6 +28,8 @@ import java.util.UUID;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    @Autowired
+    private SmsService smsService;
     @Autowired
     private AuthService authService;
 
@@ -71,6 +74,11 @@ public class AuthController {
             );
 
         } catch (Exception e) {
+            if(e.getMessage().equals("Email already registered") || e.getMessage().equals("Mobile number already registered")){
+                return ResponseEntity
+                        .status(201)
+                        .body(new AuthResponse(false, e.getMessage(), null, null, null));
+            }
             return ResponseEntity
                     .status(500)
                     .body(new AuthResponse(false, "Registration failed: " + e.getMessage(), null, null, null));
@@ -168,5 +176,10 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("message", "Password reset successful."));
     }
 
-
+//    @PostMapping("/send")
+//    public ResponseEntity<String> sendSms(@RequestParam String to,
+//                                          @RequestParam String message) {
+//        String response = smsService.sendSms(to, message);
+//        return ResponseEntity.ok(response);
+//    }
 }

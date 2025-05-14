@@ -40,5 +40,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             Member.MembershipStatus status,
             LocalDate date
     );
+
+    @Query("SELECT m FROM Member m WHERE m.membershipEndDate IN :dates")
+    List<Member> findExpiringMembers(List<LocalDate> dates);
 }
 

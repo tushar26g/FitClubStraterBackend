@@ -7,6 +7,7 @@ import com.example.gym_saas_backend.dto.UpdateMembershipStatusRequest;
 import com.example.gym_saas_backend.entity.Member;
 import com.example.gym_saas_backend.entity.Owner;
 import com.example.gym_saas_backend.service.MemberService;
+import com.example.gym_saas_backend.service.SmsService;
 import com.example.gym_saas_backend.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +23,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {
-
     @Autowired
     private MemberService memberService;
 
@@ -182,4 +182,10 @@ public class MemberController {
         return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
     }
 
+//    @PostMapping("/send")
+//    public ResponseEntity<String> sendSms(@RequestParam String to,
+//                                          @RequestParam String message) {
+//        String response = smsService.sendSms(to, message);
+//        return ResponseEntity.ok(response);
+//    }
 }
