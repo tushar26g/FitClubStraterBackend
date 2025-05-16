@@ -13,10 +13,12 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://fit-club-starter-master-five.vercel.app/") // You can restrict this to Postman or frontend domain
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true); // ✅ Needed if you're sending cookies or auth headers;
+                        .allowedOriginPatterns(
+                                "https://fit-club-starter-master-five.vercel.app",
+                                "https://fit-club-starter-master-tushar-gunwares-projects.vercel.app",
+                                "http://localhost:3000" // for local testing
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
             }
         };
     }
