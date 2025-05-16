@@ -14,6 +14,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOriginPatterns(
+                                "https://www.gymnotify.com",
                                 "https://fit-club-starter-master-five.vercel.app",
                                 "https://fit-club-starter-master-tushar-gunwares-projects.vercel.app",
                                 "http://localhost:3000" // for local testing
