@@ -81,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
 
             // Set trial and membership
             LocalDate today = LocalDate.now();
-            owner.setTrialEndDate(today.plusDays(100));
+            owner.setTrialEndDate(today.plusDays(30));
 //            owner.setMembershipEndDate(today.plusYears(1));
             owner.setAccountStatus(Owner.AccountStatus.TRIAL);
             if (profilePhoto != null && !profilePhoto.isEmpty()) {

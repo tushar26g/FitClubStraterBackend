@@ -54,6 +54,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestPart("dto") RegisterRequest dto,
                                                  @RequestPart(value = "profilePhoto", required = false) MultipartFile profilePhoto) {
+//        System.out.println("Tushar");
         try {
             Owner owner = authService.registerOwner(dto, profilePhoto);
             if (owner == null) {

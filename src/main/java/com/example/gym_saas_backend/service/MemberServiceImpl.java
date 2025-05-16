@@ -27,6 +27,8 @@ import java.util.Optional;
 
 @Service
 public class MemberServiceImpl implements MemberService {
+    @Autowired
+    private OwnerRepository ownerRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -36,6 +38,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Value("${app.send.excel.to}")
     private String recipientEmail;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Member addMember(MemberRequestDto dto, MultipartFile profilePhoto) {
@@ -99,7 +104,19 @@ public class MemberServiceImpl implements MemberService {
             member.setWeight(dto.getWeight());
 
         member.setGymOwnerId(dto.getGymOwnerId());
-        return memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
+                // Fetch gym owner details
+        Owner gymOwner = ownerRepository.findById(dto.getGymOwnerId())
+                .orElseThrow(() -> new IllegalStateException("Gym Owner not found"));
+
+        // Send receipt email
+        if (savedMember.getEmail() != null && !savedMember.getEmail().isEmpty()) {
+            String subject = "Membership Receipt - " + gymOwner.getBusinessName();
+            String htmlBody = generateReceiptHtml(savedMember, gymOwner);
+            emailService.sendHTMLEmail(savedMember.getEmail(), subject, htmlBody);
+        }
+
+        return savedMember;
     }
 
     @Override
@@ -222,4 +239,33 @@ public class MemberServiceImpl implements MemberService {
             return false; // ❌ Mail failed
         }
     }
+
+    private String generateReceiptHtml(Member member, Owner owner) {
+        return """
+        <html>
+        <body style="font-family: Arial, sans-serif;">
+            <h2 style="color: #2E86C1;">Membership Receipt</h2>
+            <p><strong>Member Name:</strong> %s</p>
+            <p><strong>Mobile:</strong> %s</p>
+            <p><strong>Email:</strong> %s</p>
+            <p><strong>Membership Package:</strong> %s</p>
+            <p><strong>Membership End date:</strong>%s</p>
+            <p><strong>Amount Paid:</strong> ₹%s</p>
+            <hr/>
+            <p><strong>Issued by: </strong> %s</p>
+            <p><strong>Receipt Date:</strong> %s</p>
+        </body>
+        </html>
+    """.formatted(
+                member.getName(),
+                member.getMobileNumber(),
+                member.getEmail() != null ? member.getEmail() : "-",
+                member.getPackageName(),
+                member.getMembershipEndDate(),
+                member.getAmountPaid(),
+                owner.getBusinessName(),
+                java.time.LocalDate.now()
+        );
+    }
+
 }
