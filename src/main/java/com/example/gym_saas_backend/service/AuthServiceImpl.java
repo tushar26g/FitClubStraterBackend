@@ -97,7 +97,7 @@ public class AuthServiceImpl implements AuthService {
             // Optionally set JWT token in Owner object (if you have a field or want to return separately)
             // String token = jwtUtil.generateToken(savedOwner.getEmail(), "GYM_OWNER", savedOwner.getId());
             if (savedOwner.getEmail() != null) {
-                String subject = "🎉 Welcome to FitClub! Enjoy 100 Days of Free Trial";
+                String subject = "Welcome to GymNotify – Your 30 Trial Has Started\n";
                 String htmlBody = buildWelcomeEmail(savedOwner.getFullName(), savedOwner.getTrialEndDate());
                 emailService.sendHTMLEmail(savedOwner.getEmail(), subject, htmlBody);
             }
@@ -165,34 +165,34 @@ public class AuthServiceImpl implements AuthService {
 
     private String buildWelcomeEmail(String name, LocalDate trialEndDate) {
         return """
-        <html>
-        <body style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px;">
-            <div style="max-width: 600px; margin: auto; background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                <h2 style="color: #2c3e50;">👋 Hello %s,</h2>
-                <p style="font-size: 16px; color: #34495e;">
-                    Welcome to <strong>FitClub</strong> – your all-in-one gym management solution!
+    <html>
+    <body style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            <h2 style="color: #2c3e50;">Hello %s,</h2>
+            <p style="font-size: 16px; color: #34495e;">
+                Welcome to <strong>GymNotify</strong>, your gym's all-in-one management tool.
+            </p>
+            <p style="font-size: 16px; color: #34495e;">
+                Your complimentary 30-day trial is now active.
+            </p>
+            <div style="background-color: #ecf0f1; padding: 15px; border-left: 5px solid #2ecc71; margin: 20px 0;">
+                <p style="font-size: 16px; margin: 0;">
+                    Trial End Date: <strong style="color: #27ae60;">%s</strong>
                 </p>
-                <p style="font-size: 16px; color: #34495e;">
-                    🎉 You’ve successfully registered and activated your <strong>100-day free trial</strong>.
-                </p>
-                <div style="background-color: #ecf0f1; padding: 15px; border-left: 5px solid #2ecc71; margin: 20px 0;">
-                    <p style="font-size: 16px; margin: 0;">
-                        Your trial ends on: <strong style="color: #27ae60;">%s</strong>
-                    </p>
-                </div>
-                <p style="font-size: 16px; color: #34495e;">
-                    Start adding members, managing attendance, and tracking payments effortlessly.
-                </p>
-                <a href="https://your-app.vercel.app" style="display: inline-block; padding: 12px 20px; background-color: #27ae60; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
-                    🚀 Go to Dashboard
-                </a>
-                <p style="font-size: 14px; color: #95a5a6; margin-top: 30px;">
-                    If you have any questions, just reply to this email. We're always here to help!
-                </p>
-                <p style="font-size: 14px; color: #bdc3c7;">– Team FitClub</p>
             </div>
-        </body>
-        </html>
+            <p style="font-size: 16px; color: #34495e;">
+                You can now start adding members, managing attendance, and tracking payments with ease.
+            </p>
+            <a href="https://www.gymnotify.com/dashboard" style="display: inline-block; padding: 12px 20px; background-color: #27ae60; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                Access Your Dashboard
+            </a>
+            <p style="font-size: 14px; color: #95a5a6; margin-top: 30px;">
+                Need assistance? Simply reply to this message – we're happy to support you.
+            </p>
+            <p style="font-size: 14px; color: #bdc3c7;">– The GymNotify Team</p>
+        </div>
+    </body>
+    </html>
     """.formatted(name, trialEndDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy")));
     }
 
