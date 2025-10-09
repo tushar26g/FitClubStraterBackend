@@ -143,16 +143,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void processForgotPassword(String mobileNumber) {
-        Owner owner = ownerRepository.findByMobileNumber(mobileNumber)
-                .orElseThrow(() -> new RuntimeException("User with given mobile number not found"));
+    public void processForgotPassword(String identifier) {
+        Optional<Owner> ownerOptional;
+
+        if (isEmail(identifier)) {
+            ownerOptional = ownerRepository.findByEmail(identifier);
+        } else {
+            ownerOptional = ownerRepository.findByMobileNumber(identifier);
+        }
+
+        Owner owner = ownerOptional.orElseThrow(() ->
+                new RuntimeException("User with given mobile number or email not found"));
 
         if (owner.getEmail() == null || owner.getEmail().isBlank()) {
             throw new RuntimeException("Registered email not found for this account.");
         }
 
         String token = refreshTokenService.generateResetToken(owner);
-        String resetLink = "http://localhost:3000/reset-password?token=" + token;
+        String resetLink = "http://www.gymnotify.com/reset-password?token=" + token;
 
         String subject = "Password Reset Request";
         String body = "Hi " + owner.getFullName() + ",\n\n"
@@ -196,4 +204,7 @@ public class AuthServiceImpl implements AuthService {
     """.formatted(name, trialEndDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy")));
     }
 
+    private boolean isEmail(String input) {
+        return input != null && input.contains("@");
+    }
 }
