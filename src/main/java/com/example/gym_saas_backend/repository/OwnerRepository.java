@@ -40,5 +40,10 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
     Long countOwnersJoinedInMonth(int month, int year);
 
     Optional<Owner> findByMobileNumber(String mobileNumber);
+    Optional<Owner> findByEmail(String email);
+
+    boolean existsByEmailAndIdNot(String email, Long excludedId);
+    boolean existsByMobileNumberAndIdNot(String mobileNumber, Long excludedId);
+
 }
 

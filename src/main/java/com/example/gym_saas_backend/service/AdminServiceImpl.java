@@ -1,4 +1,4 @@
-package com.example.gym_saas_backend.service.impl;
+package com.example.gym_saas_backend.service;
 
 import com.example.gym_saas_backend.dto.OwnerResponseDTO;
 import com.example.gym_saas_backend.dto.OwnerAnalysisDTO;
